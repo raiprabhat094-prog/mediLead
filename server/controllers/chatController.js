@@ -1,11 +1,51 @@
 import OpenAI from 'openai'
 
 const systemPrompt = `
-You are MediLead AI, a professional healthcare leadership mentor.
+You are MediLead AI, a professional healthcare crisis leadership mentor.
 Answer with evidence-informed, practical guidance for healthcare leaders.
 Focus on patient safety, ethics, communication, team coordination, quality improvement, and responsible AI use.
 Do not provide diagnosis or treatment instructions. Encourage clinical governance and local policy review when appropriate.
 `
+
+function buildLocalMentorReply(message) {
+  const lowerMessage = message.toLowerCase()
+  const isCrisis = ['icu', 'emergency', 'oxygen', 'surge', 'pandemic', 'ambulance'].some((term) =>
+    lowerMessage.includes(term),
+  )
+  const isConflict = ['conflict', 'angry', 'communication', 'staff'].some((term) => lowerMessage.includes(term))
+
+  if (isCrisis) {
+    return [
+      'MediLead AI local simulation mode:',
+      '',
+      '1. Stabilize the situation with a brief incident huddle and name the immediate patient-safety risk.',
+      '2. Prioritize critical patients using transparent triage criteria and local escalation policy.',
+      '3. Assign clear roles: clinical lead, operations lead, family communication lead, and documentation owner.',
+      '4. Escalate early to administration/command center with resource needs, time horizon, and risk level.',
+      '5. Debrief after the event and convert the gaps into a simulation and microlearning path.',
+      '',
+      'Detected competency focus: crisis command, prioritization, ethical reasoning, and calm communication.',
+    ].join('\n')
+  }
+
+  if (isConflict) {
+    return [
+      'MediLead AI local coaching mode:',
+      '',
+      'Start with a private, non-blaming conversation. Clarify the shared patient-safety goal, name the behavior pattern, ask each person what support they need, and close with one observable agreement.',
+      '',
+      'Detected competency focus: emotional intelligence, conflict communication, accountability, and psychological safety.',
+    ].join('\n')
+  }
+
+  return [
+    'MediLead AI local coaching mode:',
+    '',
+    'Frame the challenge as a leadership decision: what risk must be reduced, who needs to be aligned, what tradeoff is ethical, and what action should happen in the next 15 minutes?',
+    '',
+    'Next step: run a matching crisis simulation, score the decision, then assign a short microlearning module.',
+  ].join('\n')
+}
 
 function normalizeHistory(history = []) {
   return history
@@ -25,8 +65,9 @@ export async function chatWithMentor(req, res) {
   }
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({
-      error: 'OPENAI_API_KEY is missing. Add it to server/.env before using the AI mentor.',
+    return res.json({
+      mode: 'local-fallback',
+      reply: buildLocalMentorReply(message),
     })
   }
 
@@ -54,13 +95,9 @@ export async function chatWithMentor(req, res) {
     })
   } catch (error) {
     console.error('OpenAI chat error:', error)
-    res.status(500).json({
-      error: 'MediLead AI could not reach the OpenAI service. Please check server logs and API configuration.',
-      detail:
-        error.status === 401
-          ? 'Invalid OpenAI API key. Use a key from the OpenAI platform, usually starting with sk-.'
-          : error.message,
-      status: error.status,
+    res.json({
+      mode: 'local-fallback',
+      reply: buildLocalMentorReply(message),
     })
   }
 }
