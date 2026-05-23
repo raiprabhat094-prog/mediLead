@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 
-const navItems = ['Command', 'Coach', 'Simulation', 'Microlearning', 'Analytics']
+const navItems = [
+  { label: 'Dashboard', href: '#dashboard', marker: 'D' },
+  { label: 'AI Mentor', href: '#ai-mentor', marker: 'A' },
+  { label: 'Simulations', href: '#simulations', marker: 'S' },
+  { label: 'Research', href: '#research', marker: 'R' },
+  { label: 'Profile', href: '#profile', marker: 'P' },
+]
 
 const roleProfiles = {
   'Nurse manager': {
@@ -35,6 +41,34 @@ const challengeTopics = [
   'Ethical decision',
 ]
 
+const crisisScenarios = {
+  'ICU oxygen crisis': {
+    title: 'ICU Oxygen Crisis',
+    trigger: 'Oxygen stock falls by 40%, ICU demand rises, and staff are worried about rationing decisions.',
+    stakes: 'patient safety, ethical triage, escalation timing',
+  },
+  'Emergency ward overload': {
+    title: 'Emergency Ward Overload',
+    trigger: 'The emergency ward has 31 waiting patients, two trauma arrivals, and only one open resuscitation bay.',
+    stakes: 'patient flow, team coordination, communication under pressure',
+  },
+  'Pandemic response': {
+    title: 'Pandemic Response Surge',
+    trigger: 'Respiratory cases increase 300% over 48 hours while PPE supply and staffing both tighten.',
+    stakes: 'public messaging, surge planning, workforce protection',
+  },
+  'Staff shortage': {
+    title: 'Critical Staff Shortage',
+    trigger: 'Three senior nurses call out before a full census night shift with multiple high-acuity patients.',
+    stakes: 'delegation, scope safety, morale, transparent escalation',
+  },
+  'Ambulance surge': {
+    title: 'Ambulance Surge Command',
+    trigger: 'Seven ambulances arrive within 20 minutes after a highway incident and the hospital command center is not yet active.',
+    stakes: 'incident command, prioritization, rapid communication',
+  },
+}
+
 const competencyRubric = [
   { label: 'Communication clarity', score: 82, trend: '+9', color: 'var(--mint)' },
   { label: 'Prioritization', score: 74, trend: '+4', color: 'var(--amber)' },
@@ -55,6 +89,12 @@ const analytics = [
   { value: '12', label: 'adaptive simulations completed' },
   { value: '4.3', label: 'average feedback cycles per case' },
   { value: '92%', label: 'microlearning retention score' },
+]
+
+const dashboardCards = [
+  { title: 'Next simulation', value: 'ICU oxygen crisis', detail: 'Level 3 adaptive pressure' },
+  { title: 'Weakest skill', value: 'Crisis command', detail: 'Needs one guided practice run' },
+  { title: 'Recommended lesson', value: 'Safety huddle script', detail: '4 min microlearning' },
 ]
 
 const decisionOptions = [
@@ -90,6 +130,29 @@ const microLessons = [
   },
 ]
 
+const quizQuestions = [
+  {
+    question: 'In an oxygen shortage, what should a leader do first?',
+    answer: 'Activate a safety huddle and use transparent triage criteria.',
+  },
+  {
+    question: 'Which behavior best shows emotional intelligence during staff panic?',
+    answer: 'Acknowledge pressure, create role clarity, and communicate next steps calmly.',
+  },
+  {
+    question: 'What makes escalation effective?',
+    answer: 'Clear risk level, resource request, time horizon, and documented decision owner.',
+  },
+]
+
+const researchOutputs = ['Executive summary', 'Key insights', 'Viva questions', 'Flashcards']
+
+const profileStats = [
+  ['Current role', 'Nurse leadership track'],
+  ['Cohort rank', 'Top 18%'],
+  ['Focus area', 'Emergency coordination'],
+]
+
 const quickPrompts = [
   'I need to handle a nurse staffing shortage tonight.',
   'Help me respond to conflict between two senior clinicians.',
@@ -99,6 +162,7 @@ const quickPrompts = [
 function App() {
   const [selectedRole, setSelectedRole] = useState('Nurse manager')
   const [selectedTopic, setSelectedTopic] = useState('Staffing shortage')
+  const [selectedCrisis, setSelectedCrisis] = useState('ICU oxygen crisis')
   const [difficulty, setDifficulty] = useState(2)
   const [selectedDecision, setSelectedDecision] = useState(0)
   const [messages, setMessages] = useState([
@@ -114,6 +178,7 @@ function App() {
   const chatEndRef = useRef(null)
 
   const profile = roleProfiles[selectedRole]
+  const crisis = crisisScenarios[selectedCrisis]
   const userMessageCount = messages.filter((message) => message.role === 'user').length
 
   const diagnosis = useMemo(() => {
@@ -131,7 +196,12 @@ function App() {
     return {
       problemArea: selectedTopic,
       tone,
-      gap: tone === 'high-pressure' ? 'crisis command' : tone === 'tense' ? 'conflict communication' : 'prioritization under constraint',
+      gap:
+        tone === 'high-pressure'
+          ? 'crisis command'
+          : tone === 'tense'
+            ? 'conflict communication'
+            : 'prioritization under constraint',
       need: 'practice with concise escalation, ethical tradeoffs, and team-facing feedback',
     }
   }, [messages, selectedTopic])
@@ -225,12 +295,19 @@ function App() {
         <Brand />
         <nav className="nav-list">
           {navItems.map((item) => (
-            <a href={`#${item.toLowerCase()}`} key={item}>
-              <span />
-              {item}
+            <a href={item.href} key={item.label}>
+              <span>{item.marker}</span>
+              {item.label}
             </a>
           ))}
         </nav>
+        <div className="profile-mini">
+          <div>NY</div>
+          <span>
+            <strong>Nurse Yadav</strong>
+            <small>Hackathon demo learner</small>
+          </span>
+        </div>
         <div className="signal-card">
           <p>Live AI signal</p>
           <strong>{notice}</strong>
@@ -245,17 +322,17 @@ function App() {
           </div>
           <div className="topbar-actions">
             <button className="quiet-button" onClick={startVoice}>Voice</button>
-            <a className="primary-button" href="#coach">Start coaching</a>
+            <a className="primary-button" href="#ai-mentor">Start coaching</a>
           </div>
         </header>
 
-        <section className="hero-grid" id="command">
+        <section className="hero-grid" id="dashboard">
           <div className="hero-panel">
             <div className="hero-copy">
-              <span className="eyebrow">Chatbot + simulation + microlearning</span>
-              <h2>One learning loop from real workplace challenge to measurable leadership growth.</h2>
+              <span className="eyebrow">Hackathon MVP: AI crisis leadership simulator</span>
+              <h2>Train hospital leaders through AI-scored crisis decisions, not passive chatbot advice.</h2>
               <p>
-                The platform listens to a leader's situation, identifies competency gaps, generates a contextual healthcare scenario, evaluates decisions, and assigns adaptive microlearning tied to the same challenge.
+                MediLead turns a real healthcare workplace problem into a crisis simulation, scores the user's leadership response, and assigns adaptive microlearning for the same competency gap.
               </p>
             </div>
 
@@ -275,6 +352,32 @@ function App() {
               </ControlGroup>
             </div>
 
+            <div className="dashboard-cards">
+              {dashboardCards.map((card) => (
+                <article className="dashboard-card" key={card.title}>
+                  <span>{card.title}</span>
+                  <strong>{card.value}</strong>
+                  <p>{card.detail}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="crisis-picker">
+              {Object.entries(crisisScenarios).map(([key, scenario]) => (
+                <button
+                  className={selectedCrisis === key ? 'crisis-option active' : 'crisis-option'}
+                  key={key}
+                  onClick={() => {
+                    setSelectedCrisis(key)
+                    setSelectedTopic(key.includes('staff') ? 'Staffing shortage' : 'Emergency response')
+                  }}
+                >
+                  <strong>{scenario.title}</strong>
+                  <span>{scenario.stakes}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="timeline">
               {learnerTimeline.map((item, index) => (
                 <article key={item.step}>
@@ -289,7 +392,7 @@ function App() {
           <DiagnosisPanel diagnosis={diagnosis} profile={profile} selectedRole={selectedRole} />
         </section>
 
-        <section className="two-column" id="coach">
+        <section className="two-column" id="ai-mentor">
           <ChatPanel
             chatEndRef={chatEndRef}
             input={input}
@@ -320,15 +423,15 @@ function App() {
           </section>
         </section>
 
-        <section className="simulation-grid" id="simulation">
+        <section className="simulation-grid" id="simulations">
           <section className="panel simulation-panel">
-            <PanelHeader eyebrow="Scenario-based simulation" title={`${selectedRole}: ${selectedTopic}`} />
+            <PanelHeader eyebrow="AI crisis simulation" title={`${crisis.title} for ${selectedRole}`} />
             <div className="scenario-brief">
-              <p>{profile.scenario}</p>
+              <p>{crisis.trigger} {profile.scenario}</p>
               <dl>
                 <div><dt>Context</dt><dd>{profile.context}</dd></div>
                 <div><dt>Adaptive rule</dt><dd>{adaptiveDifficulty}</dd></div>
-                <div><dt>Evaluation</dt><dd>decisions, communication style, prioritization, ethics, crisis management</dd></div>
+                <div><dt>Evaluation</dt><dd>{crisis.stakes}, decision quality, communication, ethics, crisis management</dd></div>
               </dl>
             </div>
             <div className="decision-stack">
@@ -389,6 +492,32 @@ function App() {
           </section>
         </section>
 
+        <section className="two-column" id="research">
+          <section className="panel">
+            <PanelHeader eyebrow="AI-generated quiz" title="Rapid readiness check" />
+            <div className="quiz-list">
+              {quizQuestions.map((item, index) => (
+                <article key={item.question}>
+                  <strong>Q{index + 1}. {item.question}</strong>
+                  <p>{item.answer}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel research-panel">
+            <PanelHeader eyebrow="Research summarizer demo" title="PDF-to-learning workflow" />
+            <label className="upload-box">
+              <input type="file" accept=".pdf" />
+              <span>Upload research PDF</span>
+              <strong>Generate summary, insights, viva questions, and flashcards</strong>
+            </label>
+            <div className="research-output">
+              {researchOutputs.map((output) => <span key={output}>{output}</span>)}
+            </div>
+          </section>
+        </section>
+
         <section className="analytics-grid" id="analytics">
           {analytics.map((item) => (
             <article className="analytics-card" key={item.label}>
@@ -396,6 +525,27 @@ function App() {
               <span>{item.label}</span>
             </article>
           ))}
+        </section>
+
+        <section className="profile-section" id="profile">
+          <section className="panel profile-card">
+            <PanelHeader eyebrow="Learner profile" title="Personalized leadership track" />
+            <div className="profile-main">
+              <div className="profile-avatar">NY</div>
+              <div>
+                <h3>Nurse Yadav</h3>
+                <p>Training for hospital crisis leadership with emphasis on ethical triage, communication clarity, and team coordination.</p>
+              </div>
+            </div>
+            <div className="profile-stat-grid">
+              {profileStats.map(([label, value]) => (
+                <article key={label}>
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </article>
+              ))}
+            </div>
+          </section>
         </section>
       </section>
     </main>
