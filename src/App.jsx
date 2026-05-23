@@ -91,6 +91,12 @@ const analytics = [
   { value: '92%', label: 'microlearning retention score' },
 ]
 
+const impactMetrics = [
+  ['40%', 'faster escalation practice'],
+  ['5', 'crisis pathways'],
+  ['24/7', 'AI mentor availability'],
+]
+
 const dashboardCards = [
   { title: 'Next simulation', value: 'ICU oxygen crisis', detail: 'Level 3 adaptive pressure' },
   { title: 'Weakest skill', value: 'Crisis command', detail: 'Needs one guided practice run' },
@@ -321,6 +327,7 @@ function App() {
             <h1>Continuous coaching ecosystem</h1>
           </div>
           <div className="topbar-actions">
+            <span className="status-pill">Live MVP</span>
             <button className="quiet-button" onClick={startVoice}>Voice</button>
             <a className="primary-button" href="#ai-mentor">Start coaching</a>
           </div>
@@ -334,6 +341,15 @@ function App() {
               <p>
                 MediLead turns a real healthcare workplace problem into a crisis simulation, scores the user's leadership response, and assigns adaptive microlearning for the same competency gap.
               </p>
+            </div>
+
+            <div className="impact-strip">
+              {impactMetrics.map(([value, label]) => (
+                <article key={label}>
+                  <strong>{value}</strong>
+                  <span>{label}</span>
+                </article>
+              ))}
             </div>
 
             <div className="control-grid">
@@ -389,7 +405,21 @@ function App() {
             </div>
           </div>
 
-          <DiagnosisPanel diagnosis={diagnosis} profile={profile} selectedRole={selectedRole} />
+          <div className="right-stack">
+            <DiagnosisPanel diagnosis={diagnosis} profile={profile} selectedRole={selectedRole} />
+            <section className="demo-flow-card">
+              <PanelHeader eyebrow="Demo flow" title="Judge-ready story" />
+              <div className="demo-flow">
+                <span>Chat</span>
+                <i />
+                <span>Simulate</span>
+                <i />
+                <span>Score</span>
+                <i />
+                <span>Learn</span>
+              </div>
+            </section>
+          </div>
         </section>
 
         <section className="two-column" id="ai-mentor">
