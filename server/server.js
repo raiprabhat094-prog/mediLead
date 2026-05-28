@@ -1,9 +1,13 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-import mongoose from 'mongoose'
 import { fileURLToPath } from 'node:url'
-import chatRoutes from './routes/chatRoutes.js'
+import chatRoutes from './routes/chat.js'
+import diagnosisRoutes from './routes/diagnosis.js'
+import evaluationRoutes from './routes/evaluation.js'
+import microlearningRoutes from './routes/microlearning.js'
+import researchRoutes from './routes/research.js'
+import simulationRoutes from './routes/simulation.js'
 
 dotenv.config({ path: fileURLToPath(new URL('./.env', import.meta.url)) })
 
@@ -18,17 +22,13 @@ app.get('/health', (_req, res) => {
 })
 
 app.use('/chat', chatRoutes)
+app.use('/diagnose', diagnosisRoutes)
+app.use('/simulate', simulationRoutes)
+app.use('/evaluate', evaluationRoutes)
+app.use('/microlearning', microlearningRoutes)
+app.use('/research', researchRoutes)
 
 async function startServer() {
-  if (process.env.MONGODB_URI) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI)
-      console.log('MongoDB connected')
-    } catch (error) {
-      console.warn('MongoDB connection skipped:', error.message)
-    }
-  }
-
   app.listen(port, () => {
     console.log(`MediLead AI server running on http://localhost:${port}`)
   })

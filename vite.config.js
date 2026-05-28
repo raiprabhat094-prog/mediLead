@@ -7,6 +7,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/chat': 'http://localhost:5000',
+      '/diagnose': 'http://localhost:5000',
+      '/simulate': 'http://localhost:5000',
+      '/evaluate': 'http://localhost:5000',
+      '/microlearning': 'http://localhost:5000',
+      '/research': 'http://localhost:5000',
       '/health': 'http://localhost:5000',
     },
   },

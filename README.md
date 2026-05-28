@@ -1,91 +1,117 @@
 # MediLead AI
 
-AI-powered healthcare crisis leadership simulator for hospital teams.
+AI-powered healthcare crisis leadership learning platform.
 
-MediLead AI helps healthcare leaders practice high-pressure decisions through a continuous coaching loop:
+MediLead AI converts real workplace problems into a continuous learning flow:
 
-1. Chat with an AI leadership mentor about a real workplace challenge.
-2. Convert that challenge into a role-specific crisis simulation.
-3. Score decisions for leadership quality, communication, ethics, prioritization, and risk handling.
-4. Generate adaptive microlearning, quizzes, and reflection prompts from the same competency gap.
+```text
+Chat -> Diagnose -> Simulate -> Score -> Learn
+```
 
-## Hackathon Pitch
+The MVP keeps the existing React/Vite UI and adds a working Express backend powered by Google Gemini `gemini-1.5-flash`, with local fallback responses for demo reliability.
 
-Hospital leaders often face crisis decisions without enough realistic practice. MediLead AI turns emergency scenarios such as ICU oxygen shortage, emergency ward overload, pandemic surge, staff shortage, and ambulance surge into interactive AI-scored training.
+## Folder Structure
 
-The project is designed as a polished working MVP: practical impact, strong UX, real backend integration, and a demo flow that judges can understand quickly.
+```text
+Project1/
+├── src/
+│   ├── hooks/
+│   │   └── useLocalStorage.js
+│   ├── services/
+│   │   └── api.js
+│   ├── App.jsx
+│   └── App.css
+├── server/
+│   ├── routes/
+│   │   ├── chat.js
+│   │   ├── diagnosis.js
+│   │   ├── simulation.js
+│   │   ├── evaluation.js
+│   │   ├── microlearning.js
+│   │   └── research.js
+│   ├── services/
+│   │   └── gemini.js
+│   ├── server.js
+│   └── .env
+├── package.json
+└── vite.config.js
+```
 
-## Core Features
-
-- AI healthcare leadership chatbot with chat history and typing feedback
-- No-paid-API local fallback mode for reliable demos
-- Crisis simulation cards for hospital leadership scenarios
-- Decision scoring with leadership score, risk feedback, and adaptive difficulty
-- Skill-gap analysis across communication, prioritization, ethics, crisis command, and emotional intelligence
-- Personalized microlearning recommendations
-- Rapid readiness quiz section
-- Research PDF summarizer demo workflow
-- Dashboard analytics for pitch/demo storytelling
-
-## Tech Stack
-
-- React
-- Vite
-- Tailwind CSS
-- Express
-- OpenAI SDK with local fallback response mode
-
-## Setup
-
-Install dependencies:
+## Install
 
 ```bash
 npm install
+npm install @google/generative-ai multer pdf-parse
 ```
 
-Run frontend and backend together:
+## Environment
+
+Create `server/.env`:
+
+```env
+PORT=5000
+GEMINI_API_KEY=YOUR_KEY
+CLIENT_ORIGIN=http://localhost:5173
+```
+
+Replace `YOUR_KEY` with a Google AI Studio key. If the key is missing or still `YOUR_KEY`, the app uses fallback responses so the hackathon demo still works.
+
+## Run
+
+Frontend and backend together:
 
 ```bash
 npm run dev:full
 ```
 
-Open:
+Frontend:
 
 ```text
 http://localhost:5173
 ```
 
-API health check:
+Backend:
 
 ```text
-http://localhost:5000/health
+http://localhost:5000
 ```
 
-## Optional AI Key
+## API Routes
 
-Create `server/.env`:
-
-```env
-OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-4.1-mini
-PORT=5000
-CLIENT_ORIGIN=http://localhost:5173
+```text
+POST /chat
+POST /diagnose
+POST /simulate
+POST /evaluate
+POST /microlearning
+POST /research
+GET  /health
 ```
 
-If no key is present, the backend returns a structured local mentor response so the simulator remains demo-ready.
+## MVP Features
 
-## Demo Script
+- Gemini-powered healthcare leadership mentor chatbot
+- Persistent chat history with localStorage
+- Structured diagnosis engine
+- Dynamic crisis simulation generation
+- AI decision scoring
+- Adaptive microlearning generation
+- PDF research summarizer
+- Voice input with browser SpeechRecognition
+- Persistent selected role, simulation history, scores, and learning progress
 
-1. Explain the problem: hospital leaders need realistic crisis training.
-2. Ask the chatbot: "How should I handle emergency ICU overload?"
-3. Select "ICU Oxygen Crisis" or "Pandemic Response Surge."
-4. Choose a leadership decision and show the score changing.
-5. Show skill gaps, microlearning, quiz, and research summarizer workflow.
-6. End with: "MediLead AI trains better healthcare leaders using simulation-driven intelligence."
-
-## Build
+## Verify
 
 ```bash
 npm run lint
 npm run build
 ```
+
+## Demo Flow
+
+1. Ask: "We have ICU staffing shortage and staff are overwhelmed."
+2. Show diagnosis: problem area, tone, competency gap, learning need.
+3. Generate an ICU oxygen crisis simulation.
+4. Select a decision and show AI scoring.
+5. Show adaptive microlearning and quiz.
+6. Upload a PDF to generate research learning assets.
