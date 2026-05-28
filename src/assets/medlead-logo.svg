@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="none" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">medlead logo</title>
+  <desc id="desc">A medical leadership mark with a lowercase m, cross, and upward path.</desc>
+  <rect width="86" height="86" x="5" y="5" fill="#fff" rx="22"/>
+  <rect width="86" height="86" x="5" y="5" stroke="#0B405F" stroke-width="7" rx="22"/>
+  <path fill="#0B405F" d="M23 68V35.6c0-7.5 4.9-12.8 12.1-12.8 5.3 0 9 2.5 11 7.2 2.3-4.8 6.4-7.2 12.1-7.2C66.5 22.8 72 28.9 72 38v30H58V40.3c0-3.9-2.1-6.3-5.4-6.3-3.4 0-5.7 2.4-5.7 6.3V68H33V40.3c0-3.9-2-6.3-5.2-6.3-3 0-4.8 2.2-4.8 6.3V68Z"/>
+  <path fill="#0F9D91" d="M20 72c15.8-27.4 33.4-31.5 53.4-36.2C60.7 44.9 47.9 56.6 37.2 72H20Z"/>
+  <path fill="#D69A21" d="M65.2 28.6 84 21.7l-3.2 19.5-4.9-5.2c-5 6.4-11.9 12.2-20.5 17.2 6.1-6.4 11.5-13.8 15.6-21.4l-5.8-3.2Z"/>
+  <path fill="#65C79D" d="M65 57h8v-8h8v8h8v8h-8v8h-8v-8h-8v-8Z"/>
+</svg>

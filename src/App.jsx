@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
+import medleadLogo from './assets/medlead-logo.svg'
 import { getJson, postJson } from './services/api'
 
 const roles = ['Nurse manager', 'Hospital administrator', 'Public health officer', 'Department head']
@@ -19,6 +20,11 @@ const emptyDiagnosis = {
 
 function App() {
   const [theme, setTheme] = useState('light')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [authMode, setAuthMode] = useState('login')
+  const [accountName, setAccountName] = useState('')
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
   const [role, setRole] = useState(roles[0])
   const [difficulty, setDifficulty] = useState(3)
   const [message, setMessage] = useState(starterPrompts[0])
@@ -231,13 +237,117 @@ function App() {
     window.speechSynthesis.speak(utterance)
   }
 
+  function handleLogin(event) {
+    event.preventDefault()
+    setIsLoggedIn(true)
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <main className={`app landing-page ${isDark ? 'theme-dark' : 'theme-light'}`}>
+        <header className="landing-header">
+          <section className="brand-lockup">
+            <img className="brand-mark" src={medleadLogo} alt="medlead logo" />
+            <div>
+              <p>medlead</p>
+              <h1>Healthcare leadership coaching</h1>
+            </div>
+          </section>
+          <button className="theme-button" onClick={() => setTheme(isDark ? 'light' : 'dark')} type="button">
+            {isDark ? 'Bright mode' : 'Dark mode'}
+          </button>
+        </header>
+
+        <section className="landing-shell">
+          <div className="landing-intro">
+            <span className="eyebrow">AI coaching system</span>
+            <h2>Practice better decisions before pressure reaches the floor.</h2>
+            <p>
+              Build role-specific healthcare leadership scenarios, evaluate choices, and turn feedback into focused
+              microlearning.
+            </p>
+            <div className="landing-highlights" aria-label="medlead capabilities">
+              <span>Scenario practice</span>
+              <span>Leadership feedback</span>
+              <span>Adaptive learning</span>
+            </div>
+          </div>
+
+          <form className="login-panel" onSubmit={handleLogin}>
+            <div className="section-title">
+              <div>
+                <p>{authMode === 'login' ? 'Welcome back' : 'New user'}</p>
+                <h2>{authMode === 'login' ? 'Login to medlead' : 'Create your account'}</h2>
+              </div>
+            </div>
+            <div className="auth-toggle" aria-label="Account access mode">
+              <button
+                className={authMode === 'login' ? 'active' : ''}
+                onClick={() => setAuthMode('login')}
+                type="button"
+              >
+                Login
+              </button>
+              <button
+                className={authMode === 'create' ? 'active' : ''}
+                onClick={() => setAuthMode('create')}
+                type="button"
+              >
+                Create account
+              </button>
+            </div>
+            {authMode === 'create' && (
+              <label>
+                Full name
+                <input
+                  autoComplete="name"
+                  onChange={(event) => setAccountName(event.target.value)}
+                  placeholder="Your name"
+                  required
+                  type="text"
+                  value={accountName}
+                />
+              </label>
+            )}
+            <label>
+              Email
+              <input
+                autoComplete="email"
+                onChange={(event) => setLoginEmail(event.target.value)}
+                placeholder="you@hospital.org"
+                required
+                type="email"
+                value={loginEmail}
+              />
+            </label>
+            <label>
+              Password
+              <input
+                autoComplete="current-password"
+                minLength="4"
+                onChange={(event) => setLoginPassword(event.target.value)}
+                placeholder="Enter password"
+                required
+                type="password"
+                value={loginPassword}
+              />
+            </label>
+            <button className="primary" type="submit">
+              {authMode === 'login' ? 'Login' : 'Create account'}
+            </button>
+          </form>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className={`app ${isDark ? 'theme-dark' : 'theme-light'}`}>
       <header className="app-header">
         <section className="brand-lockup">
-          <div className="brand-mark">HL</div>
+          <img className="brand-mark" src={medleadLogo} alt="medlead logo" />
           <div>
-            <p>HealthLead AI</p>
+            <p>medlead</p>
             <h1>Healthcare leadership coaching workspace</h1>
           </div>
         </section>
@@ -248,12 +358,8 @@ function App() {
 
       <section className="hero-card">
         <div>
-          <span className="eyebrow">Full-stack AI coaching system</span>
+          <span className="eyebrow">AI coaching system</span>
           <h2>Turn workplace pressure into scenario practice, feedback, and adaptive learning.</h2>
-          <p>
-            The backend analyzes the challenge, generates a role-specific scenario, scores the
-            decision, and returns personalized microlearning for the learner.
-          </p>
         </div>
         <aside className="hero-stats">
           <article>
